@@ -19,7 +19,11 @@ router.get('/:id', (req, res) => {
 
     db('cars').where({id}).first()
     .then(car => {
-        res.status(200).json(car);
+        if(car) {
+            res.status(200).json(car);
+        } else {
+            res.status(500).json({ message: 'Could not find car by ID' });
+        }
     })
     .catch(err => {
         res.status(500).json({ message: 'Failed to retrieve cars' });
@@ -47,16 +51,32 @@ router.put('/:id', (req, res) => {
     const carChanges = req.body;
 
     db('cars').where({ id }).update(carChanges)
-    .then(updated => {
-        if(updated) {
-            res.status(201).json({ message: 'Your car has been updated!' });
-        } else {
-            res.status(500).json({ message: 'Could not find car by ID' });
-        }
-    })
-    .catch(err => {
-        res.status(500).json({ message: 'Failed to update the car' });
-    });
+        .then(updated => {
+            if(updated) {
+                res.status(201).json({ message: 'Your car has been updated!' });
+            } else {
+                res.status(500).json({ message: 'Could not find car by ID' });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to update the car' });
+        });
+});
+
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+
+    db('cars').where({ id }).del()
+        .then(deleted => {
+            if(deleted) {
+                res.status(200).json({ message: 'Your car has been deleted!' });
+            } else {
+                res.status(500).json({ message: 'Could not find car by ID' });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to delete the car' });
+        });
 });
 
 module.exports = router;
