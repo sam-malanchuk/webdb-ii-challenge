@@ -14,6 +14,18 @@ router.get('/', (req, res) => {
         });
 });
 
+router.get('/:id', (req, res) => {
+    const { id } = req.params;
+
+    db('cars').where({id}).first()
+    .then(car => {
+        res.status(200).json(car);
+    })
+    .catch(err => {
+        res.status(500).json({ message: 'Failed to retrieve cars' });
+    });
+});
+
 router.post('/', (req, res) => {
     const carsData = req.body;
 
