@@ -42,4 +42,21 @@ router.post('/', (req, res) => {
     });
 });
 
+router.put('/:id', (req, res) => {
+    const { id } = req.params;
+    const carChanges = req.body;
+
+    db('cars').where({ id }).update(carChanges)
+    .then(updated => {
+        if(updated) {
+            res.status(201).json({ message: 'Your car has been updated!' });
+        } else {
+            res.status(500).json({ message: 'Could not find car by ID' });
+        }
+    })
+    .catch(err => {
+        res.status(500).json({ message: 'Failed to update the car' });
+    });
+});
+
 module.exports = router;
