@@ -5,7 +5,13 @@ const db = require('../data/dbConfig.js');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-    res.json({ message: "endpoint works!" });
+    db('cars')
+        .then(cars => {
+            res.status(200).json(cars);
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to retrieve cars' });
+        });
 });
 
 module.exports = router;
